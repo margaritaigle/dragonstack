@@ -1,21 +1,20 @@
-const express = require('express');
-const GenerationEngine = require('./engine.js');
+const express = require("express");
+const GenerationEngine = require("./generation/engine");
+const dragonRouter = require("./api/dragon.js");
+const generationRouter = require("./api/generation.js");
 // const Generation = require('./generation.js');
 // const Dragon = require("./dragon.js");
-
 
 // * 3. Generation Engine
 
 const app = express();
 const engine = new GenerationEngine();
 
-engine.start();
+app.locals.engine = engine;
+app.use("/dragon", dragonRouter);
+app.use("/generation", generationRouter);
 
-app.get('/dragon/new', (req, res) => {
-    res.json({
-        dragon: engine.generation.newDragon()
-    })
-});
+engine.start();
 
 module.exports = app;
 
@@ -33,7 +32,6 @@ module.exports = app;
 //     const mimar = generation.newDragon();
 //     console.log('mimar', mimar)
 // }, 15000); FAILS
-
 
 // * 1. Dragon class
 
