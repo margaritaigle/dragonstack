@@ -11,8 +11,21 @@ const app = express();
 const engine = new GenerationEngine();
 
 app.locals.engine = engine;
+
+// When we pass callback that we pass to de .use function is called middleware
 app.use("/dragon", dragonRouter);
 app.use("/generation", generationRouter);
+
+//! Error handling middleware
+// the next parameter sends data to the next middleware function
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+
+  res.status(statusCode).json({
+    type: "error",
+    message: err.message,
+  });
+});
 
 engine.start();
 
